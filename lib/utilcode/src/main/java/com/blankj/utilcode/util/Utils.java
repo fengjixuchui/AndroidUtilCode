@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.arch.lifecycle.Lifecycle;
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 /**
  * <pre>
@@ -48,19 +49,24 @@ public final class Utils {
 
     /**
      * Return the Application object.
+     * <p>Main process get app by UtilsFileProvider,
+     * and other process get app by reflect.</p>
      *
      * @return the Application object
      */
     public static Application getApp() {
         if (sApp != null) return sApp;
-        throw new NullPointerException("UtilsFileProvider load failed.");
+        init(UtilsBridge.getApplicationByReflect());
+        if (sApp == null) throw new NullPointerException("reflect failed.");
+        Log.i("Utils", UtilsBridge.getCurrentProcessName() + " reflect app success.");
+        return sApp;
     }
 
     ///////////////////////////////////////////////////////////////////////////
     // interface
     ///////////////////////////////////////////////////////////////////////////
 
-    public abstract static class Task<Result> extends UtilsBridge.Task<Result> {
+    public abstract static class Task<Result> extends ThreadUtils.SimpleTask<Result> {
 
         private Consumer<Result> mConsumer;
 
@@ -97,10 +103,6 @@ public final class Utils {
         public void onActivityDestroyed(@NonNull Activity activity) {/**/}
 
         public void onLifecycleChanged(@NonNull Activity activity, Lifecycle.Event event) {/**/}
-    }
-
-    public interface OnActivityDestroyedListener {
-        void onActivityDestroyed(Activity activity);
     }
 
     public interface Consumer<T> {
