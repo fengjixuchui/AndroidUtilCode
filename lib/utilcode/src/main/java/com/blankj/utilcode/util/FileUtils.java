@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.StatFs;
+import android.text.TextUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -57,7 +59,11 @@ public final class FileUtils {
      * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isFileExists(final File file) {
-        return file != null && isFileExists(file.getAbsolutePath());
+        if (file == null) return false;
+        if (file.exists()) {
+            return true;
+        }
+        return isFileExists(file.getAbsolutePath());
     }
 
     /**
@@ -67,27 +73,31 @@ public final class FileUtils {
      * @return {@code true}: yes<br>{@code false}: no
      */
     public static boolean isFileExists(final String filePath) {
-        if (Build.VERSION.SDK_INT < 29) {
-            File file = getFileByPath(filePath);
-            return file != null && file.exists();
+        File file = getFileByPath(filePath);
+        if (file == null) return false;
+        if (file.exists()) {
+            return true;
         }
-        return isFileExists29(filePath);
+        return isFileExistsApi29(filePath);
     }
 
-    private static boolean isFileExists29(String filePath) {
-        try {
-            Uri uri = Uri.parse(filePath);
-            ContentResolver cr = Utils.getApp().getContentResolver();
-            AssetFileDescriptor afd = cr.openAssetFileDescriptor(uri, "r");
-            if (afd == null) return false;
+    private static boolean isFileExistsApi29(String filePath) {
+        if (Build.VERSION.SDK_INT >= 29) {
             try {
-                afd.close();
-            } catch (IOException ignore) {
+                Uri uri = Uri.parse(filePath);
+                ContentResolver cr = Utils.getApp().getContentResolver();
+                AssetFileDescriptor afd = cr.openAssetFileDescriptor(uri, "r");
+                if (afd == null) return false;
+                try {
+                    afd.close();
+                } catch (IOException ignore) {
+                }
+            } catch (FileNotFoundException e) {
+                return false;
             }
-        } catch (FileNotFoundException e) {
-            return false;
+            return true;
         }
-        return true;
+        return false;
     }
 
     /**
@@ -420,12 +430,14 @@ public final class FileUtils {
         if (!srcDir.exists() || !srcDir.isDirectory()) return false;
         if (!createOrExistsDir(destDir)) return false;
         File[] files = srcDir.listFiles();
-        for (File file : files) {
-            File oneDestFile = new File(destPath + file.getName());
-            if (file.isFile()) {
-                if (!copyOrMoveFile(file, oneDestFile, listener, isMove)) return false;
-            } else if (file.isDirectory()) {
-                if (!copyOrMoveDir(file, oneDestFile, listener, isMove)) return false;
+        if (files != null && files.length > 0) {
+            for (File file : files) {
+                File oneDestFile = new File(destPath + file.getName());
+                if (file.isFile()) {
+                    if (!copyOrMoveFile(file, oneDestFile, listener, isMove)) return false;
+                } else if (file.isDirectory()) {
+                    if (!copyOrMoveDir(file, oneDestFile, listener, isMove)) return false;
+                }
             }
         }
         return !isMove || deleteDir(srcDir);
@@ -496,7 +508,7 @@ public final class FileUtils {
         // dir isn't a directory then return false
         if (!dir.isDirectory()) return false;
         File[] files = dir.listFiles();
-        if (files != null && files.length != 0) {
+        if (files != null && files.length > 0) {
             for (File file : files) {
                 if (file.isFile()) {
                     if (!file.delete()) return false;
@@ -639,7 +651,7 @@ public final class FileUtils {
      * @return the files in directory
      */
     public static List<File> listFilesInDir(final String dirPath, Comparator<File> comparator) {
-        return listFilesInDir(getFileByPath(dirPath), false);
+        return listFilesInDir(getFileByPath(dirPath), false, comparator);
     }
 
     /**
@@ -836,7 +848,7 @@ public final class FileUtils {
         List<File> list = new ArrayList<>();
         if (!isDir(dir)) return list;
         File[] files = dir.listFiles();
-        if (files != null && files.length != 0) {
+        if (files != null && files.length > 0) {
             for (File file : files) {
                 if (filter.accept(file)) {
                     list.add(file);
@@ -1159,7 +1171,7 @@ public final class FileUtils {
         if (!isDir(dir)) return -1;
         long len = 0;
         File[] files = dir.listFiles();
-        if (files != null && files.length != 0) {
+        if (files != null && files.length > 0) {
             for (File file : files) {
                 if (file.isDirectory()) {
                     len += getDirLength(file);
@@ -1374,23 +1386,64 @@ public final class FileUtils {
     /**
      * Notify system to scan the file.
      *
-     * @param file The file.
+     * @param filePath The path of file.
      */
-    public static void notifySystemToScan(final File file) {
-        if (file == null || !file.exists()) return;
-        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-        Uri uri = Uri.fromFile(file);
-        intent.setData(uri);
-        Utils.getApp().sendBroadcast(intent);
+    public static void notifySystemToScan(final String filePath) {
+        notifySystemToScan(getFileByPath(filePath));
     }
 
     /**
      * Notify system to scan the file.
      *
-     * @param filePath The path of file.
+     * @param file The file.
      */
-    public static void notifySystemToScan(final String filePath) {
-        notifySystemToScan(getFileByPath(filePath));
+    public static void notifySystemToScan(final File file) {
+        if (file == null || !file.exists()) return;
+        Intent intent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        intent.setData(Uri.parse("file://" + file.getAbsolutePath()));
+        Utils.getApp().sendBroadcast(intent);
+    }
+
+    /**
+     * Return the total size of file system.
+     *
+     * @param anyPathInFs Any path in file system.
+     * @return the total size of file system
+     */
+    public static long getFsTotalSize(String anyPathInFs) {
+        if (TextUtils.isEmpty(anyPathInFs)) return 0;
+        StatFs statFs = new StatFs(anyPathInFs);
+        long blockSize;
+        long totalSize;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            blockSize = statFs.getBlockSizeLong();
+            totalSize = statFs.getBlockCountLong();
+        } else {
+            blockSize = statFs.getBlockSize();
+            totalSize = statFs.getBlockCount();
+        }
+        return blockSize * totalSize;
+    }
+
+    /**
+     * Return the available size of file system.
+     *
+     * @param anyPathInFs Any path in file system.
+     * @return the available size of file system
+     */
+    public static long getFsAvailableSize(final String anyPathInFs) {
+        if (TextUtils.isEmpty(anyPathInFs)) return 0;
+        StatFs statFs = new StatFs(anyPathInFs);
+        long blockSize;
+        long availableSize;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            blockSize = statFs.getBlockSizeLong();
+            availableSize = statFs.getAvailableBlocksLong();
+        } else {
+            blockSize = statFs.getBlockSize();
+            availableSize = statFs.getAvailableBlocks();
+        }
+        return blockSize * availableSize;
     }
 
     ///////////////////////////////////////////////////////////////////////////

@@ -144,6 +144,10 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop" />
         <activity
+            android:name=".feature.file.FileActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop" />
+        <activity
             android:name=".feature.flashlight.FlashlightActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop" />
@@ -249,6 +253,10 @@
             android:launchMode="singleTop" />
         <activity
             android:name=".feature.toast.ToastActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".feature.uiMessage.UiMessageActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:launchMode="singleTop" />
         <activity

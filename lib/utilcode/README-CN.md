@@ -2,10 +2,10 @@
 
 Gradle:
 ```groovy
-implementation 'com.blankj:utilcode:1.27.5'
+implementation 'com.blankj:utilcode:1.29.0'
 
 // if u use AndroidX, use the following
-implementation 'com.blankj:utilcodex:1.27.5'
+implementation 'com.blankj:utilcodex:1.29.0'
 ```
 
 
@@ -346,6 +346,7 @@ getRandomColor   : 获取随机色
 
 * ### 转换相关 -> [ConvertUtils.java][convert.java] -> [Test][convert.test]
 ```
+int2HexString, hexString2Int            : int 与 hexString 互转
 bytes2Bits, bits2Bytes                  : bytes 与 bits 互转
 bytes2Chars, chars2Bytes                : bytes 与 chars 互转
 bytes2HexString, hexString2Bytes        : bytes 与 hexString 互转
@@ -487,6 +488,8 @@ getFileName               : 根据全路径获取文件名
 getFileNameNoExtension    : 根据全路径获取文件名不带拓展名
 getFileExtension          : 根据全路径获取文件拓展名
 notifySystemToScan        : 通知系统扫描文件
+getFsTotalSize            : 获取文件系统总大小
+getFsAvailableSize        : 获取文件系统可用大小
 ```
 
 * ### Fragment 相关 -> [FragmentUtils.java][fragment.java] -> [Demo][fragment.demo]
@@ -695,6 +698,12 @@ cancelAll                   : 取消所有通知
 setNotificationBarVisibility: 设置通知栏是否可见
 ```
 
+* ### 数字相关 -> [NumberUtils.java][number.java] -> [Test][number.test]
+```
+format      : 格式化
+float2Double: 浮点转双精度
+```
+
 * ### 对象相关 -> [ObjectUtils.java][object.java] -> [Test][object.test]
 ```
 isEmpty          : 判断对象是否为空
@@ -709,6 +718,7 @@ hashCode(s)      : 获取对象哈希值
 
 * ### 路径相关 -> [PathUtils.java][path.java] -> [Demo][path.demo]
 ```
+join                           : 连接路径
 getRootPath                    : 获取根路径
 getDataPath                    : 获取数据路径
 getDownloadCachePath           : 获取下载缓存路径
@@ -745,6 +755,10 @@ getExternalAppDownloadPath     : 获取外存应用下载路径
 getExternalAppDcimPath         : 获取外存应用数码相机图片路径
 getExternalAppDocumentsPath    : 获取外存应用文档路径
 getExternalAppObbPath          : 获取外存应用 OBB 路径
+getRootPathExternalFirst       : 优先获取外部根路径
+getAppDataPathExternalFirst    : 优先获取外部数据路径
+getFilesPathExternalFirst      : 优先获取外部文件路径
+getCachePathExternalFirst      : 优先获取外部缓存路径
 ```
 
 * ### 权限相关 -> [PermissionUtils.java][permission.java] -> [Demo][permission.demo]
@@ -908,8 +922,10 @@ isSDCardEnableByEnvironment: 根据 Environment 判断 SD 卡是否可用
 getSDCardPathByEnvironment : 根据 Environment 获取 SD 卡路径
 getSDCardInfo              : 获取 SD 卡信息
 getMountedSDCardPath       : 获取已挂载的 SD 卡路径
-getTotalSize               : 获取 SD 卡总大小
-getAvailableSize           : 获取 SD 卡可用大小
+getExternalTotalSize       : 获取外置 SD 卡总大小
+getExternalAvailableSize   : 获取外置 SD 卡可用大小
+getInternalTotalSize       : 获取内置 SD 卡总大小
+getInternalAvailableSize   : 获取内置 SD 卡可用大小
 ```
 
 * ### 服务相关 -> [ServiceUtils.java][service.java]
@@ -1049,6 +1065,7 @@ getStringArray  : 获取字符数组资源
 * ### 线程相关 -> [ThreadUtils.java][thread.java] -> [Test][thread.test]
 ```
 isMainThread            : 判断当前是否主线程
+getMainHandler          : 获取主线程 Handler
 runOnUiThread           : 运行在主线程
 runOnUiThreadDelayed    : 延时运行在主线程
 getFixedPool            : 获取固定线程池
@@ -1080,6 +1097,7 @@ setDeliver              : 设置任务结束后交付的线程
 
 * ### 时间相关 -> [TimeUtils.java][time.java] -> [Test][time.test]
 ```
+getSafeDateFormat       : 获取安全的日期格式
 millis2String           : 将时间戳转为时间字符串
 string2Millis           : 将时间字符串转为时间戳
 string2Date             : 将时间字符串转为 Date 类型
@@ -1130,7 +1148,7 @@ cancel         : 取消吐司显示
 setOnTouchListener: 设置触摸事件
 ```
 
-* ### UI 消息相关 -> [UiMessageUtils.java][uiMessage.java]
+* ### UI 消息相关 -> [UiMessageUtils.java][uiMessage.java] -> [Demo][uiMessage.demo]
 ```
 send          : 发送消息
 addListener   : 新增消息监听器
@@ -1139,8 +1157,10 @@ removeListener: 移除消息监听器
 
 * ### URI 相关 -> [UriUtils.java][uri.java]
 ```
-file2Uri: file 转 uri
-uri2File: uri 转 file
+res2Uri        : res 转 uri
+file2Uri       : file 转 uri
+uri2File       : uri 转 file
+uri2Bytes      : uri 转 bytes
 ```
 
 * ### UtilsTransActivity -> [UtilsTransActivity.java][trans.java]
@@ -1299,6 +1319,9 @@ getComments       : 获取压缩文件中的注释链表
 [notification.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/NotificationUtils.java
 [notification.demo]: https://github.com/Blankj/AndroidUtilCode/blob/master/feature/utilcode/pkg/src/main/java/com/blankj/utilcode/pkg/feature/notification/NotificationActivity.kt
 
+[number.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/NumberUtils.java
+[number.test]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/test/java/com/blankj/utilcode/util/NumberUtilsTest.java
+
 [object.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/ObjectUtils.java
 [object.test]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/test/java/com/blankj/utilcode/util/ObjectUtilsTest.java
 
@@ -1367,6 +1390,7 @@ getComments       : 获取压缩文件中的注释链表
 [touch.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/TouchUtils.java
 
 [uiMessage.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/UiMessageUtils.java
+[uiMessage.demo]: https://github.com/Blankj/AndroidUtilCode/blob/master/feature/utilcode/pkg/src/main/java/com/blankj/utilcode/pkg/feature/uiMessage/UiMessageActivity.kt
 
 [uri.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/UriUtils.java
 

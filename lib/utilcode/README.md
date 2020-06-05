@@ -2,10 +2,10 @@
 
 Gradle:
 ```groovy
-implementation 'com.blankj:utilcode:1.27.5'
+implementation 'com.blankj:utilcode:1.29.0'
 
 // if u use AndroidX, use the following
-implementation 'com.blankj:utilcodex:1.27.5'
+implementation 'com.blankj:utilcodex:1.29.0'
 ```
 
 
@@ -346,6 +346,7 @@ getRandomColor
 
 * ### About Convert -> [ConvertUtils.java][convert.java] -> [Test][convert.test]
 ```
+int2HexString, hexString2Int
 bytes2Bits, bits2Bytes
 bytes2Chars, chars2Bytes
 bytes2HexString, hexString2Bytes
@@ -487,6 +488,8 @@ getFileName
 getFileNameNoExtension
 getFileExtension
 notifySystemToScan
+getFsTotalSize
+getFsAvailableSize
 ```
 
 * ### About Fragment -> [FragmentUtils.java][fragment.java] -> [Demo][fragment.demo]
@@ -695,6 +698,12 @@ cancelAll
 setNotificationBarVisibility
 ```
 
+* ### About Number -> [NumberUtils.java][number.java] -> [Test][number.test]
+```
+format
+float2Double
+```
+
 * ### About Object -> [ObjectUtils.java][object.java] -> [Test][object.test]
 ```
 isEmpty
@@ -709,6 +718,7 @@ hashCode(s)
 
 * ### About Path -> [PathUtils.java][path.java] -> [Demo][path.demo]
 ```
+join
 getRootPath
 getDataPath
 getDownloadCachePath
@@ -745,6 +755,10 @@ getExternalAppDownloadPath
 getExternalAppDcimPath
 getExternalAppDocumentsPath
 getExternalAppObbPath
+getRootPathExternalFirst
+getAppDataPathExternalFirst
+getFilesPathExternalFirst
+getCachePathExternalFirst
 ```
 
 * ### About Permission -> [PermissionUtils.java][permission.java] -> [Demo][permission.demo]
@@ -908,8 +922,10 @@ isSDCardEnableByEnvironment
 getSDCardPathByEnvironment
 getSDCardInfo
 getMountedSDCardPath
-getTotalSize
-getAvailableSize
+getExternalTotalSize
+getExternalAvailableSize
+getInternalTotalSize
+getInternalAvailableSize
 ```
 
 * ### About Service -> [ServiceUtils.java][service.java]
@@ -1049,6 +1065,7 @@ getStringArray
 * ### About Thread -> [ThreadUtils.java][thread.java] -> [Test][thread.test]
 ```
 isMainThread
+getMainHandler
 runOnUiThread
 runOnUiThreadDelayed
 getFixedPool
@@ -1080,6 +1097,7 @@ setDeliver
 
 * ### About Time -> [TimeUtils.java][time.java] -> [Test][time.test]
 ```
+getSafeDateFormat
 millis2String
 string2Millis
 string2Date
@@ -1130,7 +1148,7 @@ cancel
 setOnTouchListener
 ```
 
-* ### About UiMessage -> [UiMessageUtils.java][uiMessage.java]
+* ### About UiMessage -> [UiMessageUtils.java][uiMessage.java] -> [Demo][uiMessage.demo]
 ```
 send
 addListener
@@ -1139,8 +1157,10 @@ removeListener
 
 * ### About Uri -> [UriUtils.java][uri.java]
 ```
+res2Uri
 file2Uri
 uri2File
+uri2InputStream
 ```
 
 * ### UtilsTransActivity -> [UtilsTransActivity.java][trans.java]
@@ -1296,6 +1316,9 @@ getComments
 [notification.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/NotificationUtils.java
 [notification.demo]: https://github.com/Blankj/AndroidUtilCode/blob/master/feature/utilcode/pkg/src/main/java/com/blankj/utilcode/pkg/feature/notification/NotificationActivity.kt
 
+[number.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/NumberUtils.java
+[number.test]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/test/java/com/blankj/utilcode/util/NumberUtilsTest.java
+
 [object.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/ObjectUtils.java
 [object.test]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/test/java/com/blankj/utilcode/util/ObjectUtilsTest.java
 
@@ -1364,6 +1387,7 @@ getComments
 [touch.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/TouchUtils.java
 
 [uiMessage.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/UiMessageUtils.java
+[uiMessage.demo]: https://github.com/Blankj/AndroidUtilCode/blob/master/feature/utilcode/pkg/src/main/java/com/blankj/utilcode/pkg/feature/uiMessage/UiMessageActivity.kt
 
 [uri.java]: https://github.com/Blankj/AndroidUtilCode/blob/master/lib/utilcode/src/main/java/com/blankj/utilcode/util/UriUtils.java
 
